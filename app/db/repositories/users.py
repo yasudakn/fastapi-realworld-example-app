@@ -1,9 +1,12 @@
 from typing import Optional
+import os
 
 from app.db.errors import EntityDoesNotExist
 from app.db.queries.queries import queries
 from app.db.repositories.base import BaseRepository
 from app.models.domain.users import User, UserInDB
+from aiocache import cached, Cache
+from aiocache.serializers import PickleSerializer
 
 
 class UsersRepository(BaseRepository):
@@ -14,6 +17,7 @@ class UsersRepository(BaseRepository):
 
         raise EntityDoesNotExist("user with email {0} does not exist".format(email))
 
+    @cached(cache=Cache.REDIS, serializer=PickleSerializer(), endpoint=os.environ.get('REDIS_HOST'))
     async def get_user_by_username(self, *, username: str) -> UserInDB:
         user_row = await queries.get_user_by_username(
             self.connection,
