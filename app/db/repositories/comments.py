@@ -1,5 +1,8 @@
 from typing import List, Optional
+import os
 
+from aiocache import cached, Cache
+from aiocache.serializers import PickleSerializer
 from asyncpg import Connection, Record
 
 from app.db.errors import EntityDoesNotExist
@@ -9,6 +12,7 @@ from app.db.repositories.profiles import ProfilesRepository
 from app.models.domain.articles import Article
 from app.models.domain.comments import Comment
 from app.models.domain.users import User
+from app.db.caches import key_builder
 
 
 class CommentsRepository(BaseRepository):
@@ -16,6 +20,10 @@ class CommentsRepository(BaseRepository):
         super().__init__(conn)
         self._profiles_repo = ProfilesRepository(conn)
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def get_comment_by_id(
         self,
         *,
@@ -39,6 +47,10 @@ class CommentsRepository(BaseRepository):
             "comment with id {0} does not exist".format(comment_id),
         )
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def get_comments_for_article(
         self,
         *,
@@ -84,6 +96,10 @@ class CommentsRepository(BaseRepository):
             author_username=comment.author.username,
         )
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def _get_comment_from_db_record(
         self,
         *,

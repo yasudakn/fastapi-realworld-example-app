@@ -1,5 +1,8 @@
 from typing import List, Optional, Sequence, Union
+import os
 
+from aiocache import cached, Cache
+from aiocache.serializers import PickleSerializer
 from asyncpg import Connection, Record
 from pypika import Query
 
@@ -18,6 +21,7 @@ from app.db.repositories.profiles import ProfilesRepository
 from app.db.repositories.tags import TagsRepository
 from app.models.domain.articles import Article
 from app.models.domain.users import User
+from app.db.caches import key_builder
 
 AUTHOR_USERNAME_ALIAS = "author_username"
 SLUG_ALIAS = "slug"
@@ -211,6 +215,10 @@ class ArticlesRepository(BaseRepository):  # noqa: WPS214
             for article_row in articles_rows
         ]
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def get_articles_for_user_feed(
         self,
         *,
@@ -234,6 +242,10 @@ class ArticlesRepository(BaseRepository):  # noqa: WPS214
             for article_row in articles_rows
         ]
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def get_article_by_slug(
         self,
         *,
@@ -251,6 +263,10 @@ class ArticlesRepository(BaseRepository):  # noqa: WPS214
 
         raise EntityDoesNotExist("article with slug {0} does not exist".format(slug))
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def get_tags_for_article_by_slug(self, *, slug: str) -> List[str]:
         tag_rows = await queries.get_tags_for_article_by_slug(
             self.connection,
@@ -258,6 +274,10 @@ class ArticlesRepository(BaseRepository):  # noqa: WPS214
         )
         return [row["tag"] for row in tag_rows]
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def get_favorites_count_for_article_by_slug(self, *, slug: str) -> int:
         return (
             await queries.get_favorites_count_for_article(self.connection, slug=slug)
@@ -291,6 +311,10 @@ class ArticlesRepository(BaseRepository):  # noqa: WPS214
             slug=article.slug,
         )
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def _get_article_from_db_record(
         self,
         *,

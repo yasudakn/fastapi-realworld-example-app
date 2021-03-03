@@ -1,5 +1,8 @@
 from typing import Optional, Union
+import os
 
+from aiocache import cached, Cache
+from aiocache.serializers import PickleSerializer
 from asyncpg import Connection
 
 from app.db.queries.queries import queries
@@ -7,6 +10,7 @@ from app.db.repositories.base import BaseRepository
 from app.db.repositories.users import UsersRepository
 from app.models.domain.profiles import Profile
 from app.models.domain.users import User
+from app.db.caches import key_builder
 
 UserLike = Union[User, Profile]
 
@@ -16,6 +20,10 @@ class ProfilesRepository(BaseRepository):
         super().__init__(conn)
         self._users_repo = UsersRepository(conn)
 
+    @cached(cache=Cache.REDIS,
+            serializer=PickleSerializer(),
+            endpoint=os.environ.get('REDIS_HOST'),
+            key_builder=key_builder)
     async def get_profile_by_username(
         self,
         *,
