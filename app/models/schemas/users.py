@@ -24,7 +24,7 @@ class UserInUpdate(BaseModel):
 
 
 class UserWithToken(User):
-    token: str
+    token: Optional[str] = None
 
 
 class UserInResponse(RWSchema):
