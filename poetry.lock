@@ -1273,7 +1273,7 @@ testing = ["pytest (>=3.5,!=3.7.3)", "pytest-checkdocs (>=1.2.3)", "pytest-flake
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.7"
-content-hash = "fd28956d3eed654c776157202e7d3b02a893e61c8ae74a12e294901beb7abc10"
+content-hash = "2c551586ebeb7e3a4f8996ba053f39edd839afe1e5f58e262945fbe1754f67eb"
 
 [metadata.files]
 aiocache = [
