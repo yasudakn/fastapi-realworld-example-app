@@ -9,8 +9,9 @@ from app.models.domain.profiles import Profile
 from app.models.domain.users import User
 from app.models.schemas.profiles import ProfileInResponse
 from app.resources import strings
+from app.api.base import BaseRoute
 
-router = APIRouter()
+router = APIRouter(route_class=BaseRoute)
 
 
 @router.get(

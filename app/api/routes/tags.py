@@ -3,8 +3,9 @@ from fastapi import APIRouter, Depends
 from app.api.dependencies.database import get_repository
 from app.db.repositories.tags import TagsRepository
 from app.models.schemas.tags import TagsInList
+from app.api.base import BaseRoute
 
-router = APIRouter()
+router = APIRouter(route_class=BaseRoute)
 
 
 @router.get("", response_model=TagsInList, name="tags:get-all")

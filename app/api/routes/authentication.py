@@ -14,8 +14,9 @@ from app.models.schemas.users import (
 from app.resources import strings
 from app.services import jwt
 from app.services.authentication import check_email_is_taken, check_username_is_taken
+from app.api.base import BaseRoute
 
-router = APIRouter()
+router = APIRouter(route_class=BaseRoute)
 
 
 @router.post("/login", response_model=UserInResponse, name="auth:login")

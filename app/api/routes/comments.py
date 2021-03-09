@@ -19,8 +19,9 @@ from app.models.schemas.comments import (
     CommentInResponse,
     ListOfCommentsInResponse,
 )
+from app.api.base import BaseRoute
 
-router = APIRouter()
+router = APIRouter(route_class=BaseRoute)
 
 
 @router.get(

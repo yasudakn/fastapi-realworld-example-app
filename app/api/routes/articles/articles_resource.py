@@ -23,8 +23,9 @@ from app.models.schemas.articles import (
 )
 from app.resources import strings
 from app.services.articles import check_article_exists, get_slug_for_article
+from app.api.base import BaseRoute
 
-router = APIRouter()
+router = APIRouter(route_class=BaseRoute)
 
 
 @router.get("", response_model=ListOfArticlesInResponse, name="articles:list-articles")

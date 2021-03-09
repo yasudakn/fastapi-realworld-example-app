@@ -15,8 +15,9 @@ from app.models.schemas.articles import (
     ListOfArticlesInResponse,
 )
 from app.resources import strings
+from app.api.base import BaseRoute
 
-router = APIRouter()
+router = APIRouter(route_class=BaseRoute)
 
 
 @router.get(
