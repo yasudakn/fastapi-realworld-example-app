@@ -13,7 +13,7 @@ from app.models.domain.users import User
 from app.resources import strings
 from app.services import jwt
 
-HEADER_KEY = "Authorization"
+HEADER_KEY = "UserAuth"
 
 
 class RWAPIKeyHeader(APIKeyHeader):
